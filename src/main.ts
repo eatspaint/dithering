@@ -147,12 +147,34 @@ const draw = async (ctx: CanvasRenderingContext2D) => {
   const imageData = ctx.getImageData(0, 0, DIMENSIONS[0], DIMENSIONS[1]);
   const transformed = transform(imageData);
   ctx.putImageData(transformed, 0, 0);
-
-  // transform
-  // render to canvas
 };
 
-const main = () => {
+/**
+ * Replace the canvas element with an img, so that results are easier to save
+ */
+const convertCanvasToImg = (ctx: CanvasRenderingContext2D) => {
+  ctx.canvas.toBlob((blob) => {
+    if (!blob) {
+      console.warn("couldn't build blob from canvas");
+      return;
+    }
+
+    // init replacement img
+    const newImg = document.createElement('img');
+
+    // get data url from canvas blob
+    const url = URL.createObjectURL(blob);
+
+    // put the canvas data url in the img
+    newImg.src = url;
+    document.body.appendChild(newImg);
+
+    // remove the original canvas
+    ctx.canvas.remove();
+  });
+}
+
+const main = async () => {
   const ctx = getContext();
 
   if (!ctx) {
@@ -160,7 +182,8 @@ const main = () => {
   }
 
   resizeCanvas(ctx);
-  draw(ctx);
+  await draw(ctx);
+  convertCanvasToImg(ctx);
 };
 
 main();
