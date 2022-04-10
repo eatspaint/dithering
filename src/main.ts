@@ -1,13 +1,10 @@
 import './style.css'
 import { PALETTES } from "./palettes";
+import { buildFilters } from './filters';
 
 const DIMENSIONS = [window.innerWidth, window.innerHeight];
-const FILTER = [
-  [7 / 16, 1], // x + 1, y
-  [3 / 16, DIMENSIONS[0] - 1], // x - 1, y + 1
-  [5 / 16, DIMENSIONS[0]], // x, y + 1
-  [1 / 16, DIMENSIONS[0] + 1], // x + 1, y + 1
-];
+const FILTERS = buildFilters(DIMENSIONS[0]);
+const FILTER = FILTERS[Math.floor(Math.random() * FILTERS.length)];
 const PALETTE = PALETTES[Math.floor(Math.random() * PALETTES.length)];
 
 const buildURL = () => {
